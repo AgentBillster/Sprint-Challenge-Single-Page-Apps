@@ -1,25 +1,51 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import CharacterCard from "./CharacterCard"
+import styled from "styled-components"
+
+
+const SearchBar = styled.div`
+text-align:center
+
+`;
+
+
+
 
 export default function CharacterList() {
-const [character, setCharacter] = useState([])
+const [data, setData] = useState([])
+const [query, setQuery] = useState("");
 
   useEffect(() => {
     axios
      .get("https://rickandmortyapi.com/api/character/")
      .then(response => {
       console.log(response.data.results)
-       setCharacter(response.data.results);
-     })
-
-}, []);
+       const characters = response.data.results.filter(character =>
+        character.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setData(characters);
+      });
+  }, [query]);
+    
+  const handleInputChange = event => {
+    setQuery(event.target.value);
+  };
 
 
   return (
+    <SearchBar>
+    <form>
+    <input 
+    type="text"
+    onChange={handleInputChange}
+    value={query}
+    placeholder="search here"
+    />
+    </form>
     
     <div className="grid-view">
-    {character.map(characters => {
+    {data.map(characters => {
       return (
       <CharacterCard
         id={characters.id}
@@ -31,7 +57,8 @@ const [character, setCharacter] = useState([])
       />
       )
     })}
-  </div>
+    </div>
+  </SearchBar>
   )}
 
     

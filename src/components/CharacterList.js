@@ -1,16 +1,68 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import CharacterCard from "./CharacterCard"
+import styled from "styled-components"
+
+
+const SearchBar = styled.div`
+text-align:center
+
+`;
+
+
+
 
 export default function CharacterList() {
-  // TODO: Add useState to track data from useEffect
+const [data, setData] = useState([])
+const [query, setQuery] = useState("");
 
   useEffect(() => {
-    // TODO: Add API Request here - must run in `useEffect`
-    //  Important: verify the 2nd `useEffect` parameter: the dependancies array!
-  }, []);
+    axios
+     .get("https://rickandmortyapi.com/api/character/")
+     .then(response => {
+      console.log(response.data.results)
+       const characters = response.data.results.filter(character =>
+        character.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setData(characters);
+      });
+  }, [query]);
+    
+  const handleInputChange = event => {
+    setQuery(event.target.value);
+  };
+
 
   return (
-    <section className="character-list">
-      <h2>TODO: `array.map()` over your state here!</h2>
-    </section>
-  );
-}
+    <SearchBar>
+    <form>
+    <input 
+    type="text"
+    onChange={handleInputChange}
+    value={query}
+    placeholder="search here"
+    />
+    </form>
+    
+    <div className="grid-view">
+    {data.map(characters => {
+      return (
+      <CharacterCard
+        id={characters.id}
+        name={characters.name}
+        status={characters.status}
+        species={characters.species}
+        image={characters.image}
+        gender={characters.gender}
+      />
+      )
+    })}
+    </div>
+  </SearchBar>
+  )}
+
+    
+
+
+  
+  

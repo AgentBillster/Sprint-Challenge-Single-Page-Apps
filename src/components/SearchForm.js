@@ -8,3 +8,6 @@ export default function SearchForm() {
     </section>
   );
 }
+
+
+// I PUT IT ALL ON THE CHARACTER LIST COMPONENT
